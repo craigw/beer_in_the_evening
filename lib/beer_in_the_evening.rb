@@ -1,5 +1,6 @@
 require "nokogiri"
 require "open-uri"
+require "digest/sha1"
 require "tmpdir"
 
 require "beer_in_the_evening/version"
