@@ -1,0 +1,40 @@
+module BeerInTheEvening
+  module Location
+    module Dlr
+      ALL_SAINTS = 6
+      BANK = 325
+      BECKTON = 21
+      BECKTON_PARK = 22
+      BLACKWALL = 30
+      BOW_CHURCH = 35
+      CANARY_WHARF = 328
+      CANNING_TOWN = 329
+      CROSSHARBOUR_AND_LONDON_ARENA = 69
+      CUSTOM_HOUSE = 71
+      CUTTY_SARK = 72
+      CYPRUS = 73
+      DEPTFORD_BRIDGE = 78
+      DEVONS_ROAD = 79
+      EAST_INDIA = 87
+      ELVERSON_ROAD = 94
+      GALLIONS_REACH = 107
+      GREENWICH = 118
+      HERON_QUAYS = 134
+      ISLAND_GARDENS = 150
+      LEWISHAM = 169
+      LIMEHOUSE = 172
+      MUDCHUTE = 188
+      POPLAR = 219
+      PRINCE_REGENT = 221
+      PUDDING_MILL_LANE = 222
+      ROYAL_ALBERT = 236
+      ROYAL_VICTORIA = 238
+      SHADWELL = 326
+      SOUTH_QUAY = 256
+      STRATFORD = 327
+      TOWER_GATEWAY = 283
+      WEST_INDIA_QUAY = 310
+      WESTFERRY = 314
+    end
+  end
+end
