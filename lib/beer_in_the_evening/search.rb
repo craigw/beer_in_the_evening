@@ -1,5 +1,11 @@
 module BeerInTheEvening
   class Search
+    class << self
+      attr_accessor :maximum_cache_ttl
+    end
+    # Invalidate the cache at least every 28 days
+    self.maximum_cache_ttl = 86400 * 28
+
     attr_accessor :tube_station
     attr_accessor :real_ale
     attr_accessor :food
@@ -42,8 +48,18 @@ module BeerInTheEvening
     end
     private :page
 
+    def cache_generation
+      Time.now.to_i / self.class.maximum_cache_ttl.to_i
+    end
+    private :cache_generation
+
+    def cache_prefix
+      "beer_in_the_evening-#{BeerInTheEvening::VERSION}-#{self.class.maximum_cache_ttl.to_i}-#{cache_generation}"
+    end
+    private :cache_prefix
+
     def read_cache uri
-      cache_dir = Dir.tmpdir + "/beer_in_the_evening-#{BeerInTheEvening::VERSION}"
+      cache_dir = Dir.tmpdir + "/#{cache_prefix}"
       Dir.mkdir cache_dir unless File.exists? cache_dir
       cache_file_name = "#{cache_dir}/#{Digest::SHA1.hexdigest(uri)}.html"
       return File.read(cache_file_name) if File.exists? cache_file_name
