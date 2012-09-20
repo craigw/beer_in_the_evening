@@ -28,10 +28,6 @@ module BeerInTheEvening
       results[0][0].to_f if results[0]
     end
 
-    def visited?
-      Meetup.exists? self
-    end
-
     def distance
       results = data.css("td:nth-child(2)")[0].inner_text.scan /Distance:(.*)miles/
       results[0][0].to_f if results[0]
