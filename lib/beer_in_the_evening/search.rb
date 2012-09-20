@@ -114,7 +114,14 @@ module BeerInTheEvening
       rows.map! { |row|
         Pub.new row
       }
-      logger.debug "Returning results as pubs"
+
+      if minimum_rating
+	# Some searches don't obey the minimum_rating parameter eg when
+	# searching by postcode.
+	rows.delete_if { |p| p.rating < minimum_rating }
+        logger.debug "Whittled results down to #{rows.size} after strict minimum rating check"
+      end
+      logger.debug "Returning #{rows.size} results as pubs"
       rows
     end
     private :results_on_page
