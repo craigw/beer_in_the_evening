@@ -19,6 +19,7 @@ Wrong.
     random_pub.to_s
     # => "Lord Clyde, 2.2 miles, 6.7 / 10, http://beerintheevening.com/pubs/s/65/6501/Lord_Clyde/Canonbury"
 
+There are a few more examples in the `examples/` directory.
 
 ## Authors
 
