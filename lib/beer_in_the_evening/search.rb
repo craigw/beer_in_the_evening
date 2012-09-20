@@ -57,7 +57,7 @@ module BeerInTheEvening
     def query_string
       params = []
       params << "tu=#{tube_station}" if tube_station
-      params << "postcode=#{escaped_postcode}" if postcode
+      params << "pc=#{escaped_postcode}" if postcode
       params << "ra=on" if real_ale
       params << "f=on" if food
       params << "wireless=on" if wifi
