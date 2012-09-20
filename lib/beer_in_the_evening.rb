@@ -3,6 +3,7 @@ require "open-uri"
 require "digest/sha1"
 require "tmpdir"
 require "null_logger"
+require "cgi"
 
 require "beer_in_the_evening/version"
 require "beer_in_the_evening/pub"

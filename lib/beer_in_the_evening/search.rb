@@ -6,6 +6,7 @@ module BeerInTheEvening
     # Invalidate the cache at least every 28 days
     self.maximum_cache_ttl = 86400 * 28
 
+    attr_accessor :postcode
     attr_accessor :tube_station
     attr_accessor :real_ale
     attr_accessor :food
@@ -48,9 +49,15 @@ module BeerInTheEvening
     end
     include Enumerable
 
+    def escaped_postcode
+      CGI.escape postcode
+    end
+    private :escaped_postcode
+
     def query_string
       params = []
       params << "tu=#{tube_station}" if tube_station
+      params << "postcode=#{escaped_postcode}" if postcode
       params << "ra=on" if real_ale
       params << "f=on" if food
       params << "wireless=on" if wifi
