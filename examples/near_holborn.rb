@@ -1,5 +1,9 @@
 require 'beer_in_the_evening'
-search = BeerInTheEvening::Search.new
+require 'logger'
+
+STDOUT.sync = true
+logger = Logger.new STDOUT
+search = BeerInTheEvening::Search.new :logger => logger
 search.tube_station = BeerInTheEvening::Location::Tube::HOLBORN
 search.minimum_rating = 6
 search.real_ale = true

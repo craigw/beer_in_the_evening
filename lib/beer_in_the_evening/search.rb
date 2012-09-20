@@ -12,6 +12,12 @@ module BeerInTheEvening
     attr_accessor :wifi
     attr_accessor :minimum_rating
 
+    attr_accessor :logger
+
+    def initialize options = {}
+      self.logger = options[:logger] || NullLogger.instance
+    end
+
     def number_of_results
       matches = page(0).to_s.scan /showing \d+ to \d+ of (\d+)/
       matches[0][0].to_i
@@ -20,9 +26,12 @@ module BeerInTheEvening
     def each &block
       current_page = 0
       loop do
+        logger.debug "Finding next set of results"
         results = results_on_page current_page
         break if results.empty?
+        logger.debug "Yielding #{results.size} pubs to client"
         results.each &block
+        logger.debug "Client code finished"
         current_page += 1
       end
     end
@@ -41,9 +50,12 @@ module BeerInTheEvening
 
     def page n
       uri = "http://www.beerintheevening.com/pubs/results.shtml?#{query_string}&page=#{n}"
+      logger.debug "Page #{n} of results will be at #{uri}"
       content = read_cache uri do
+        logger.debug "Fetching #{uri}"
         open(uri).read
       end
+      logger.debug "Building document from HTML data"
       doc = Nokogiri::HTML content
     end
     private :page
@@ -62,19 +74,30 @@ module BeerInTheEvening
       cache_dir = Dir.tmpdir + "/#{cache_prefix}"
       Dir.mkdir cache_dir unless File.exists? cache_dir
       cache_file_name = "#{cache_dir}/#{Digest::SHA1.hexdigest(uri)}.html"
-      return File.read(cache_file_name) if File.exists? cache_file_name
+      if File.exists? cache_file_name
+        logger.debug "Found #{uri} in cache at #{cache_file_name}"
+        return File.read cache_file_name
+      end
+      logger.debug "Did not find #{uri} in cache"
       data = yield
+      logger.debug "Data is #{data.bytesize}b"
+      logger.debug "Adding #{uri} to cache as #{cache_file_name}"
       File.open cache_file_name, 'w+' do |f|
         f.puts data
       end
+      logger.debug "Returning data"
       data
     end
     private :read_cache
 
     def results_on_page n
-      page(n).css('table.pubtable tr.pubtable').to_a.map { |row|
+      rows = page(n).css('table.pubtable tr.pubtable').to_a
+      logger.debug "Found #{rows.size} results on page #{n}"
+      rows.map! { |row|
         Pub.new row
       }
+      logger.debug "Returning results as pubs"
+      rows
     end
     private :results_on_page
   end

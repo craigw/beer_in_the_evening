@@ -2,6 +2,7 @@ require "nokogiri"
 require "open-uri"
 require "digest/sha1"
 require "tmpdir"
+require "null_logger"
 
 require "beer_in_the_evening/version"
 require "beer_in_the_evening/pub"
