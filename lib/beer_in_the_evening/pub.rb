@@ -12,7 +12,7 @@ module BeerInTheEvening
     end
 
     def name
-      data.css("td b a:first-child")[0].inner_text.to_s
+      data.css("td b a:first-child")[0].inner_text.to_s.strip
     end
 
     def url
