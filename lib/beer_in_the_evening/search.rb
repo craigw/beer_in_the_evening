@@ -12,6 +12,8 @@ module BeerInTheEvening
     attr_accessor :wifi
     attr_accessor :minimum_rating
 
+    attr_accessor :maximum_results
+
     attr_accessor :logger
 
     def initialize options = {}
@@ -25,14 +27,23 @@ module BeerInTheEvening
 
     def each &block
       current_page = 0
+      results_total = 0
       loop do
         logger.debug "Finding next set of results"
         results = results_on_page current_page
         break if results.empty?
+        if maximum_results
+          while results_total + results.size > maximum_results do
+            logger.debug "Trimming results. Max = #{maximum_results}, Current = #{results_total + results.size}"
+            results.pop
+          end
+        end
         logger.debug "Yielding #{results.size} pubs to client"
         results.each &block
         logger.debug "Client code finished"
         current_page += 1
+        results_total += results.size
+        break if maximum_results && results_total >= maximum_results
       end
     end
     include Enumerable
