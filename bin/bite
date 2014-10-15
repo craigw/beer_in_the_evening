@@ -1,0 +1,32 @@
+#! /usr/bin/env ruby
+
+require 'beer_in_the_evening'
+require 'optparse'
+
+require 'logger'
+
+search = BeerInTheEvening::Search.new
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bite [options]"
+
+  opts.on("--minimum RATING", "Minimum rating to accept") do |r|
+    search.minimum_rating = r.to_i
+  end
+
+  opts.on("--results NUMBER", "Number of results to return") do |r|
+    search.maximum_results = r.to_i
+  end
+
+  opts.on("-p", "--postcode POSTCODE", "Select near postcode") do |p|
+    search.postcode = p
+  end
+
+  opts.on("-r", "--random", "Sort results randomly") do |r|
+    search.sort_by = proc { |r| rand }
+  end
+end.parse!
+
+search.each do |pub|
+  puts pub.to_s
+end

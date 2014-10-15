@@ -16,9 +16,12 @@ module BeerInTheEvening
     attr_accessor :maximum_results
 
     attr_accessor :logger
+    attr_accessor :sort_by
 
     def initialize options = {}
       self.logger = options[:logger] || NullLogger.instance
+      self.sort_by = proc { |r| -r.rating }
+      self.maximum_results = 100
     end
 
     def number_of_results
@@ -28,24 +31,25 @@ module BeerInTheEvening
 
     def each &block
       current_page = 0
-      results_total = 0
+      results = []
       loop do
         logger.debug "Finding next set of results"
-        results = results_on_page current_page
-        break if results.empty?
+        page_results = results_on_page current_page
+        break if page_results.empty?
         if maximum_results
-          while results_total + results.size > maximum_results do
-            logger.debug "Trimming results. Max = #{maximum_results}, Current = #{results_total + results.size}"
-            results.pop
+          while results.size + page_results.size > maximum_results do
+            logger.debug "Trimming results. Max = #{maximum_results}, Current = #{results.size + page_results.size}"
+            page_results.pop
           end
         end
-        logger.debug "Yielding #{results.size} pubs to client"
-        results.each &block
-        logger.debug "Client code finished"
         current_page += 1
-        results_total += results.size
-        break if maximum_results && results_total >= maximum_results
+        results += page_results
+        break if maximum_results && results.size >= maximum_results
       end
+      logger.debug "Yielding #{results.size} pubs to client"
+      results.sort_by! &sort_by
+      results.each &block
+      logger.debug "Client code finished"
     end
     include Enumerable
 
